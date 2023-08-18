@@ -24,44 +24,24 @@ public class Appointment {
 	
 	@ManyToOne
 	private User user;
-	
-	
 	// Appointement default time will be 60 mins from appoaintment start time.
 	//not sure yet we'll see
-	
-
 	private LocalDateTime appointmentDateAndTime;
-	
-	
 	@ManyToOne
 	private Consultant consultant;
-	
-
-
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(appointmentId);
 	}
-
-
-	@Override
+    @Override
 	public boolean equals(Object obj) {
-		
-		if (this == obj)
-			
-			return true;
-		
+	if (this == obj)
+		return true;
 		if (obj == null)
-			
-			return false;
-		
+		return false;
 		if (getClass() != obj.getClass())
-			
-			return false;
-		
+		return false;
 		Appointment other = (Appointment) obj;
-		
 		return Objects.equals(appointmentId, other.appointmentId);
 
 	}
