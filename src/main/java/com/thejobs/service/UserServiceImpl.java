@@ -15,6 +15,7 @@ import static com.thejobs.config.SpringdocConfig.bCryptPasswordEncoder;
 public class UserServiceImpl implements UserService {
     @Autowired
     SessionDao sessionDao;
+    @Autowired
     UserDao userDao;
 
 

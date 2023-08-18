@@ -10,6 +10,6 @@ import org.springframework.stereotype.Service;
 public interface UserService {
 
     CurrentSession getCurrentUserByUuid(String uuid) throws LoginException;
-    User createUser(User user) throws UserException;
+    User createUser(User customer) throws UserException;
 
 }
