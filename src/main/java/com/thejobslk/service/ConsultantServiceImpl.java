@@ -3,13 +3,18 @@ package com.thejobslk.service;
 
 import com.thejobslk.entity.Appointment;
 import com.thejobslk.entity.Consultant;
-import com.thejobslk.exception.ConsultantException;
-import com.thejobslk.exception.TimeDateException;
+import com.thejobslk.entity.CurrentSession;
+import com.thejobslk.entity.User;
+import com.thejobslk.exception.*;
 import com.thejobslk.repository.ConsultantDao;
+import com.thejobslk.repository.SessionDao;
+import com.thejobslk.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +26,65 @@ public class ConsultantServiceImpl implements ConsultantService {
 
     @Autowired
     ConsultantDao consultantDao;
+    @Autowired
+    SessionDao sessionDao;
+    @Autowired
+    UserDao userDao;
+
+    @Override
+    public Consultant getConsultantDetails(String key) throws UserException {
+
+        CurrentSession currentConsultant = sessionDao.findByUuid(key);
+
+        Optional<Consultant> consultant = consultantDao.findById(currentConsultant.getUserId());
+
+        if(consultant.isPresent()) {
+
+            return consultant.get();
+
+        }else {
+
+            throw new UserException("Consultant not present by this uuid " + key);
+        }
+
+
+    }
+
+
+    @Override
+    public CurrentSession getCurrentUserByUuid(String uuid) throws LoginException {
+
+        CurrentSession currentUserSession = sessionDao.findByUuid(uuid);
+
+        if(currentUserSession != null) {
+
+            return currentUserSession;
+
+        }else {
+
+            throw new LoginException("Please enter valid key");
+        }
+    }
+
+
+    @Override
+    public Consultant getConsultantByUuid(String uuid) throws UserException {
+
+        CurrentSession currentConsultant = sessionDao.findByUuid(uuid);
+
+        Optional<Consultant> consultant =
+                consultantDao.findById(currentConsultant.getUserId());
+
+        if(consultant.isPresent()) {
+
+            return consultant.get();
+
+        }else {
+
+            throw new UserException("Consultant not present by this uuid " + uuid);
+        }
+    }
+
 
 
     @Override
@@ -41,6 +105,116 @@ public class ConsultantServiceImpl implements ConsultantService {
     }
 
 
+
+    @Override
+    public List<Appointment> getUpcommingAppointment(Consultant consultant) throws AppointmentException {
+
+        List<Appointment> listOfAppointments = consultant.getListOfAppointments();
+
+        List<Appointment> listOfCommingAppointmnet = new ArrayList<>();
+
+        LocalDateTime currentTimeAndDate = LocalDateTime.now();
+
+
+        try {
+
+            for(Appointment eachAppointment: listOfAppointments) {
+
+                if(eachAppointment.getAppointmentDateAndTime().isAfter(currentTimeAndDate)) {
+
+                    listOfCommingAppointmnet.add(eachAppointment);
+                }
+            }
+        }catch(Exception exception) {
+
+            System.out.println(exception.fillInStackTrace());
+
+        }
+
+        if(!listOfCommingAppointmnet.isEmpty()) {
+
+            return listOfCommingAppointmnet;
+
+        }else {
+
+            throw new AppointmentException("No upcoming appointments. Sorry!");
+
+        }
+    }
+
+
+    @Override
+    public List<Appointment> getPastAppointment(Consultant consultant) throws AppointmentException {
+
+        List<Appointment> listOfAppointments = consultant.getListOfAppointments();
+
+        List<Appointment> listOfPastAppointments = new ArrayList<>();
+
+        LocalDateTime currentTimeAndDate = LocalDateTime.now();
+
+        testing();
+
+
+        try {
+
+            for(Appointment eachAppointment: listOfAppointments) {
+
+                if(eachAppointment.getAppointmentDateAndTime().isBefore(currentTimeAndDate)) {
+
+                    listOfPastAppointments.add(eachAppointment);
+
+                }
+
+            }
+
+        }catch(Exception exception) {
+
+
+            System.out.println(exception.fillInStackTrace());
+
+        }
+
+        if(!listOfPastAppointments.isEmpty()) {
+
+            return listOfPastAppointments;
+
+        }else {
+
+            throw new AppointmentException("No past appointments. Sorry!");
+
+        }
+    }
+
+
+    public static void testing() {
+
+        int strength = 10; // work factor of bcrypt
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(strength, new SecureRandom());
+
+        String encodedPassword = bCryptPasswordEncoder.encode("1234");
+
+    }
+
+
+
+
+
+
+    @Override
+    public List<Appointment> getAllAppointments(Consultant registerConsultant) throws ConsultantException {
+
+        List<Appointment> listOfAppointments = registerConsultant.getListOfAppointments();
+
+        if(!listOfAppointments.isEmpty()) {
+
+            return listOfAppointments;
+
+        }else {
+
+            throw new ConsultantException("No appointments found.");
+        }
+    }
 
 
     @Override
@@ -104,6 +278,34 @@ public class ConsultantServiceImpl implements ConsultantService {
         }
 
 
+
+    }
+
+
+    @Override
+    public List<Consultant> getAllConsultantsInDatabase() throws ConsultantException {
+
+        List<Consultant> listOfConsultant = consultantDao.findAll();
+
+        if(!listOfConsultant.isEmpty()) {
+
+            return listOfConsultant;
+
+        }else {
+
+            throw new ConsultantException("Consultants have not registered " +
+                    "yet.");
+        }
+
+
+    }
+
+    @Override
+    public List<User> getListOfUser() {
+
+        List<User> listOfUser = userDao.findAll();
+
+        return listOfUser;
 
     }
 

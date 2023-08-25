@@ -1,9 +1,9 @@
 package com.thejobslk.controller;
 
-import com.thejobslk.entity.Appointment;
-import com.thejobslk.entity.Consultant;
-import com.thejobslk.entity.User;
+import com.thejobslk.entity.*;
 import com.thejobslk.exception.*;
+import com.thejobslk.repository.SessionDao;
+import com.thejobslk.repository.UserDao;
 import com.thejobslk.service.ConsultantService;
 import com.thejobslk.service.UserAndAdminLoginService;
 import com.thejobslk.service.UserService;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -25,12 +26,18 @@ public class UserController {
 	
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	UserDao userDao;
 	
 	@Autowired
 	UserAndAdminLoginService loginService;
 	
 	@Autowired
 	ConsultantService consultantService;
+
+	@Autowired
+	SessionDao sessionDao;
 	
 	
 	@CrossOrigin
@@ -53,26 +60,25 @@ public class UserController {
 		
 	}
 
-	/*
+
 	@GetMapping("/UserDetails")
 	@CrossOrigin
-	public ResponseEntity<User> getUserDetails(@RequestParam String key) throws LoginException, UserException{
-		
-		if(loginService.checkUserLoginOrNot(key)) {
+	public ResponseEntity<User> getUserDetails(@RequestParam String key) throws LoginException, UserException {
+
+		if (loginService.checkUserLoginOrNot(key)) {
 
 			User returnedUser = userService.getUserDetails(key);
-			
+
 			return new ResponseEntity<User>(returnedUser, HttpStatus
-			.ACCEPTED);
-			
-			
-		}else {
-			
+					.ACCEPTED);
+
+		} else {
+
 			throw new LoginException("Invalid key or please login first");
-			
+
 		}
-		
-	}*/
+	}
+
 
 	@PostMapping("/bookAppointment")
 	@CrossOrigin
@@ -120,6 +126,132 @@ public class UserController {
 	}
 
 
+	@GetMapping("/allAppointment")
+	@CrossOrigin
+	public ResponseEntity<List<Appointment>> GetUserAllAppointment(@RequestParam String key) throws AppointmentException, UserException, LoginException{
+
+		if(loginService.checkUserLoginOrNot(key)) {
+
+			List<Appointment> listOfAppointments =
+					userService.getAppointmentsOfUser(key);
+
+			return new ResponseEntity<List<Appointment>>(listOfAppointments, HttpStatus.ACCEPTED);
+
+
+		}else {
+
+			throw new LoginException("Invalid key or please login first");
+
+		}
+
+	}
+
+
+
+
+
+	@GetMapping("/allConsultants")
+	@CrossOrigin
+	public ResponseEntity<List<Consultant>> getAllConsultantsFromDataBase(@RequestParam String key) throws LoginException, ConsultantException{
+
+		if(loginService.checkUserLoginOrNot(key)) {
+
+			List<Consultant> ListOfConsultants =
+					consultantService.getAllConsultantsInDatabase();
+
+			return new ResponseEntity<List<Consultant>>(ListOfConsultants, HttpStatus.ACCEPTED);
+
+
+		}else {
+
+			throw new LoginException("Invalid key or please login first");
+
+		}
+	}
+
+	@GetMapping("/getAllConsultants")
+	@CrossOrigin
+	public ResponseEntity<List<Consultant>> getAllConsultants(@RequestParam String key) throws LoginException, ConsultantException{
+		if(loginService.checkUserLoginOrNot(key)) {
+
+			List<Consultant> listOfConsultants = userService.getAllConsultants();
+
+			return new ResponseEntity<List<Consultant>>(listOfConsultants,
+					HttpStatus.ACCEPTED);
+
+
+		}else {
+
+			throw new LoginException("Invalid key or please login first");
+
+		}
+	}
+
+
+	@DeleteMapping("/cancelappointment")
+	@CrossOrigin
+	public ResponseEntity<Appointment> deleteAppointment(@RequestParam String key, @RequestBody Appointment appointment) throws AppointmentException, ConsultantException, Exception{
+
+		if(loginService.checkUserLoginOrNot(key)) {
+
+			Appointment ConsultantList =
+					userService.deleteAppointment(appointment);
+
+			return new ResponseEntity<Appointment>(ConsultantList, HttpStatus.ACCEPTED);
+
+
+		}else {
+
+			throw new LoginException("Invalid key or please login first");
+
+		}
+	}
+
+	@PutMapping("/forgetPassword")
+	@CrossOrigin
+	public ResponseEntity<User> forgetPassword(@RequestParam String key,
+											@RequestBody ForgetPassword forgetPassword) throws LoginException, PasswordException {
+
+		if(loginService.checkUserLoginOrNot(key)) {
+
+			if(forgetPassword.getNewPassword().equals(forgetPassword.getConfirmNewPassword())) {
+
+				if(forgetPassword.getOldPassword().equals(forgetPassword.getNewPassword())) {
+
+					throw new PasswordException("Please enter new password.");
+
+				}
+
+				User finalResult = userService.forgetPassword(key,
+						forgetPassword);
+
+				return new ResponseEntity<User>(finalResult,
+						HttpStatus.ACCEPTED);
+
+			}else {
+
+				throw new PasswordException("Confirm password and new " +
+						"password do not match!");
+
+			}
+
+		}else {
+
+			throw new LoginException("Invalid key or please login first");
+
+		}
+	}
+
+
+
+
+
 }
+
+
+
+
+
+
 
 

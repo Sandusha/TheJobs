@@ -8,8 +8,14 @@ import com.thejobslk.repository.SessionDao;
 import com.thejobslk.repository.UserDao;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -47,6 +53,12 @@ public class UserServiceImpl implements UserService, Runnable {
 
     @Autowired
     EmailBody emailBody;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserAndAdminLoginService loginService;
 
 
     public UserServiceImpl(Appointment appointment, EmailSenderService emailSenderService, EmailBody emailBody) {
@@ -134,6 +146,63 @@ public class UserServiceImpl implements UserService, Runnable {
             throw new LoginException("Please enter valid key");
         }
     }
+
+    @Override
+    public User getUserDetails(String key) throws UserException {
+
+        CurrentSession currentUserSession = sessionDao.findByUuid(key);
+
+        Optional<User> registerUser =
+                userDao.findById(currentUserSession.getUserId());
+
+        if (registerUser.isPresent()) {
+
+            return registerUser.get();
+
+
+        } else {
+
+            throw new UserException("User not found.");
+        }
+    }
+
+
+    @Override
+    public List<Appointment> getAppointmentsOfUser(String key) throws AppointmentException, UserException {
+
+        CurrentSession currentUserSession = sessionDao.findByUuid(key);
+
+        Optional<User> user =
+                userDao.findById(currentUserSession.getUserId());
+
+        if (user.get() != null) {
+
+            List<Appointment> listOfAppointments =
+                    user.get().getListOfAppointments();
+
+            if (!listOfAppointments.isEmpty()) {
+
+                return listOfAppointments;
+
+            } else {
+
+                throw new AppointmentException("No appointments found.");
+            }
+
+        } else {
+
+            throw new UserException("Please enter valid user details");
+        }
+    }
+
+
+
+
+
+
+
+
+
 
     public static void loadAppointmentDates(Integer from, Integer to) throws IOException, TimeDateException {
   myTimeDate.clear();
@@ -367,6 +436,138 @@ public class UserServiceImpl implements UserService, Runnable {
         }
 
     }
+
+
+
+    @Override
+    public Appointment deleteAppointment(Appointment appointment) throws Exception {
+
+        Optional<Appointment> registerAppointment = appointmentDao.findById(appointment.getAppointmentId());
+
+        // check booking appointment time is left or not
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+
+        if (localDateTime.isAfter(registerAppointment.get().getAppointmentDateAndTime())) {
+
+            throw new TimeDateException("Appointment time already exceeded. You can't cancel the appointment.");
+
+        }
+
+        // check appointment is exist or not
+        if (registerAppointment.isPresent()) {
+
+
+            // check consultant is exist or not
+            Optional<Consultant> registeredConsultant =
+                    consultantDao.findById(appointment.getConsultant().getConsultantId());
+
+            if (registeredConsultant.isPresent()) {
+
+
+                Optional<User> registeredUser =
+                        userDao.findById(appointment.getUser().getUserId());
+
+                // check user is exists or not
+                if (registeredUser.isPresent()) {
+
+                    Boolean consListFlag = registeredConsultant.get().getListOfAppointments().remove(registerAppointment.get());
+
+                    Boolean userListFlag = registeredUser.get().getListOfAppointments().remove(registerAppointment.get());
+
+
+                    if (consListFlag && userListFlag) {
+
+                        appointmentDao.delete(registerAppointment.get());
+
+                        // sending mail to user for successfully canceling booking of appointment
+
+                        emailBody.setEmailBody("Dear Sir/Ma'am, \n You have " +
+                                "canceled an appointment with " + registerAppointment.get().getConsultant().getName()
+
+                                + "\n"
+                                + "Appointment Id: " + registerAppointment.get().getAppointmentId() + "\n"
+                                + "Consultant specialty: " + registerAppointment.get().getConsultant().getSpecialty() + "\n"
+                                + "Consultant experience : " + registerAppointment.get().getConsultant().getExperience() + "\n"
+                                + "\n"
+
+                                + "Thanks and Regards \n"
+                                + "TheJobs.LK");
+
+                        emailBody.setEmailSubject("Cancel Appointment Booking: " + appointment.getAppointmentDateAndTime() + " successfully");
+
+                        UserServiceImpl userServiceImpl =
+                                new UserServiceImpl(registerAppointment.get(), emailSenderService, emailBody);
+
+                        Thread emailSentThread = new Thread(userServiceImpl);
+
+
+                        /////////////////////////
+
+                        // Multi-Threading
+
+                        emailSentThread.start();
+
+
+                        ///////////////////////////////
+
+                        return registerAppointment.get();
+
+                    } else {
+
+                        throw new Exception("Appointment did not cancel.Try " +
+                                "Again!");
+
+                    }
+
+
+                } else {
+
+                    throw new UserException("No user found with this id " + appointment.getUser().getUserId());
+                }
+
+            } else {
+
+                throw new ConsultantException("No consultant found with this " +
+                        "id " + appointment.getConsultant().getConsultantId());
+            }
+
+
+        } else {
+
+            throw new AppointmentException("Appointment did not found " + appointment.getAppointmentId());
+        }
+
+    }
+
+
+    @Override
+    public User forgetPassword(String key, ForgetPassword forgetPassword) throws PasswordException {
+
+        CurrentSession currentUserSession = sessionDao.findByUuid(key);
+
+        Optional<User> registeredUser =
+                userDao.findById(currentUserSession.getUserId());
+
+        Boolean PasswordIsMatchingOrNot =
+                bCryptPasswordEncoder.matches(forgetPassword.getOldPassword(), registeredUser.get().getPassword());
+
+        if (PasswordIsMatchingOrNot) {
+
+            registeredUser.get().setPassword(bCryptPasswordEncoder.encode(forgetPassword.getNewPassword()));
+
+            return userDao.save(registeredUser.get());
+
+
+        } else {
+
+            throw new PasswordException("Old password does not match!.");
+
+        }
+    }
+
+
+
 
 
 

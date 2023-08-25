@@ -63,7 +63,8 @@ public class LoginController {
 		
 	}
 	
-	@DeleteMapping("/logoutConsultant")
+	@PostMapping("/logoutConsultant")
+	@CrossOrigin
 	public String logoutConsultant(@RequestParam(required = false) String key) throws LoginException {
 		
 		return consultantLoginService.logoutFromAccount(key);

@@ -33,7 +33,7 @@ public class AdminServiceImpl implements AdminService {
 
 		if(databaseConsultant == null) {
 
-			consultant.setType("Consultant");
+			consultant.setType("consultant");
 
 			consultant.setPassword(SpringdocConfig.bCryptPasswordEncoder.encode(consultant.getPassword()));
 

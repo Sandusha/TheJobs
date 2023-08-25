@@ -6,6 +6,7 @@ import com.thejobslk.entity.Consultant;
 import com.thejobslk.entity.CurrentSession;
 import com.thejobslk.entity.LoginDTO;
 import com.thejobslk.entity.LoginUUIDKey;
+import com.thejobslk.exception.ConsultantException;
 import com.thejobslk.exception.LoginException;
 import com.thejobslk.repository.ConsultantDao;
 import com.thejobslk.repository.SessionDao;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -115,6 +117,10 @@ public class ConsultantLoginServiceImpl implements ConsultantLoginService {
 		}
 
 	}
+
+
+
+
 
 	public static String generateRandomString() {
 

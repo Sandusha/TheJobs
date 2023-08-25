@@ -40,7 +40,6 @@ public class UserAndAdminLoginServiceImpl implements UserAndAdminLoginService {
 		Optional<CurrentSession> validCustomerSessionOpt =
 				sessionDao.findById(existingUser.getUserId());
 
-		////////////////////////////////
 
 		// this code is for only frontend application
 
