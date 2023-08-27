@@ -1,10 +1,7 @@
 package com.thejobslk.service;
 
 
-import com.thejobslk.entity.Appointment;
-import com.thejobslk.entity.Consultant;
-import com.thejobslk.entity.CurrentSession;
-import com.thejobslk.entity.User;
+import com.thejobslk.entity.*;
 import com.thejobslk.exception.*;
 
 import java.io.IOException;
@@ -15,6 +12,7 @@ import java.util.List;
 public interface ConsultantService {
     Consultant getConsultantDetails(String key) throws UserException;
 
+    Consultant forgetPassword(String key, ForgetPassword forgetPassword) throws PasswordException;
     Consultant getConsultantByUuid(String uuid) throws UserException;
     CurrentSession getCurrentUserByUuid(String uuid) throws LoginException;
     List<Appointment> getUpcommingAppointment(Consultant consultant) throws AppointmentException;

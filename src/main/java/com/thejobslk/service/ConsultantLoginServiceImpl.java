@@ -60,9 +60,9 @@ public class ConsultantLoginServiceImpl implements ConsultantLoginService {
 
 
 
-			existingConsultant.setType("Consultant");
+			existingConsultant.setType("consultant");
 			currentUserSession.setUserId(existingConsultant.getConsultantId());
-			currentUserSession.setUserType("Consultant");
+			currentUserSession.setUserType("consultant");
 
 			consultantDao.save(existingConsultant);
 

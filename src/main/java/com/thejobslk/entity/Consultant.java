@@ -48,7 +48,7 @@ public class Consultant {
 
 
 	private Integer appointmentToTime;
-
+	private Boolean validConsultant = true;
 	private String type;
 
 

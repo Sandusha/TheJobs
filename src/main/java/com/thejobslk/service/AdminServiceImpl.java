@@ -83,8 +83,61 @@ public class AdminServiceImpl implements AdminService {
 		}
 	}
 
+	@Override
+	public List<Consultant> getAllValidInValidConsultants(String key) throws ConsultantException {
 
+		List<Consultant> listOfConsultants = consultantDao.findAll();
 
+		if(!listOfConsultants.isEmpty()) {
+
+			return listOfConsultants;
+
+		}else {
+
+			throw new ConsultantException("No Consultants register. Please " +
+					"contact admin.");
+
+		}
+	}
+
+	@Override
+	public Consultant revokePermissionOfConsultant(Consultant consultant) throws ConsultantException {
+
+		Optional<Consultant> registerConsultant =
+				consultantDao.findById(consultant.getConsultantId());
+
+		if(registerConsultant.isPresent()) {
+
+			registerConsultant.get().setValidConsultant(false);
+
+			return consultantDao.save(registerConsultant.get());
+
+		}else {
+
+			throw new ConsultantException("valid Consultant not present with " +
+					"this id " + consultant.getConsultantId());
+
+		}
+	}
+
+	@Override
+	public Consultant grantPermissionOfConsultant(Consultant consultant) throws ConsultantException {
+
+		Optional<Consultant> registerConsultant =
+				consultantDao.findById(consultant.getConsultantId());
+
+		if(registerConsultant.isPresent()) {
+
+			registerConsultant.get().setValidConsultant(true);
+
+			return consultantDao.save(registerConsultant.get());
+
+		}else {
+
+			throw new ConsultantException("Doctor not present with this id " + consultant.getConsultantId());
+
+		}
+	}
 
 
 

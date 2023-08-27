@@ -1,10 +1,7 @@
 package com.thejobslk.service;
 
 
-import com.thejobslk.entity.Appointment;
-import com.thejobslk.entity.Consultant;
-import com.thejobslk.entity.CurrentSession;
-import com.thejobslk.entity.User;
+import com.thejobslk.entity.*;
 import com.thejobslk.exception.*;
 import com.thejobslk.repository.ConsultantDao;
 import com.thejobslk.repository.SessionDao;
@@ -20,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.thejobslk.config.SpringdocConfig.bCryptPasswordEncoder;
 
 @Service
 public class ConsultantServiceImpl implements ConsultantService {
@@ -309,6 +308,30 @@ public class ConsultantServiceImpl implements ConsultantService {
 
     }
 
+    @Override
+    public Consultant forgetPassword(String key, ForgetPassword forgetPassword) throws PasswordException {
+
+        CurrentSession currentUserSession = sessionDao.findByUuid(key);
+
+        Optional<Consultant> registeredConsultant =
+                consultantDao.findById(currentUserSession.getUserId());
+
+        Boolean PasswordIsMatchingOrNot =
+                bCryptPasswordEncoder.matches(forgetPassword.getOldPassword(), registeredConsultant.get().getPassword());
+
+        if (PasswordIsMatchingOrNot) {
+
+            registeredConsultant.get().setPassword(bCryptPasswordEncoder.encode(forgetPassword.getNewPassword()));
+
+            return consultantDao.save(registeredConsultant.get());
+
+
+        } else {
+
+            throw new PasswordException("Old password does not match!.");
+
+        }
+    }
 
 
 

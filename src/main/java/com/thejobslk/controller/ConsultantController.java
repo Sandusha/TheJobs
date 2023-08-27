@@ -1,12 +1,6 @@
 package com.thejobslk.controller;
-import com.thejobslk.entity.Appointment;
-import com.thejobslk.entity.Consultant;
-import com.thejobslk.entity.CurrentSession;
-import com.thejobslk.entity.User;
-import com.thejobslk.exception.AppointmentException;
-import com.thejobslk.exception.ConsultantException;
-import com.thejobslk.exception.LoginException;
-import com.thejobslk.exception.UserException;
+import com.thejobslk.entity.*;
+import com.thejobslk.exception.*;
 import com.thejobslk.service.ConsultantLoginService;
 import com.thejobslk.service.ConsultantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -201,6 +195,40 @@ public class ConsultantController {
 		}
 	}
 
+	@PutMapping("/forgetPassword")
+	@CrossOrigin
+	public ResponseEntity<Consultant> forgetPassword(@RequestParam String key,
+											   @RequestBody ForgetPassword forgetPassword) throws LoginException, PasswordException {
+
+		if(consultantLoginService.checkUserLoginOrNot(key)) {
+
+			if(forgetPassword.getNewPassword().equals(forgetPassword.getConfirmNewPassword())) {
+
+				if(forgetPassword.getOldPassword().equals(forgetPassword.getNewPassword())) {
+
+					throw new PasswordException("Please enter new password.");
+
+				}
+
+				Consultant finalResult = consultantService.forgetPassword(key,
+						forgetPassword);
+
+				return new ResponseEntity<Consultant>(finalResult,
+						HttpStatus.ACCEPTED);
+
+			}else {
+
+				throw new PasswordException("Confirm password and new " +
+						"password do not match!");
+
+			}
+
+		}else {
+
+			throw new LoginException("Invalid key or please login first");
+
+		}
+	}
 
 
 

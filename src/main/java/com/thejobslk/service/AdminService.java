@@ -15,6 +15,9 @@ public interface AdminService {
 	Consultant registerConsultant(Consultant consultant) throws ConsultantException;
 
 	List<Consultant> getAllConsultants() throws ConsultantException;
+	Consultant revokePermissionOfConsultant(Consultant consultant) throws ConsultantException;
+	Consultant grantPermissionOfConsultant(Consultant consultant) throws ConsultantException;
 
 	List<User> getAllUsers() throws UserException;
+	List<Consultant> getAllValidInValidConsultants(String key) throws ConsultantException;
 }

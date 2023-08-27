@@ -53,24 +53,33 @@ public class AdminController {
 		}
 	}
 
-	@GetMapping("/getConsultants")
+	@GetMapping("/getValidInValidConsultants")
 	@CrossOrigin
-	public ResponseEntity<List<Consultant>> getAllConsultants (@RequestParam String key) throws LoginException, ConsultantException{
+	public ResponseEntity<List<Consultant>> getAllValidInValidConsultants(@RequestParam String key) throws LoginException, ConsultantException{
 
 		if(userAndAdminLoginService.checkUserLoginOrNot(key)) {
 
-			List<Consultant> inListConsultants =
-					adminService.getAllConsultants();
+			CurrentSession currentUserSession = userService.getCurrentUserByUuid(key);
 
-			return new ResponseEntity<List<Consultant>>(inListConsultants, HttpStatus.ACCEPTED);
+			if(!currentUserSession.getUserType().equals("admin")) {
 
+				throw new LoginException("Please login as admin");
+
+			}
+
+			List<Consultant> listOfValidInValidConsultants =
+					adminService.getAllValidInValidConsultants(key);
+
+			return new ResponseEntity<List<Consultant>>(listOfValidInValidConsultants,
+					HttpStatus.CREATED);
 
 		}else {
 
-			throw new LoginException("Invalid key or please login first");
-
+			throw new LoginException("Please enter valid key.");
 		}
+
 	}
+
 
 	@GetMapping("/getUsers")
 	@CrossOrigin
@@ -90,6 +99,61 @@ public class AdminController {
 
 		}
 	}
+	@DeleteMapping("/revokePermission")
+	@CrossOrigin
+	public ResponseEntity<Consultant> revokePermissionOfConsultant(@RequestParam String key, @RequestBody Consultant consultant) throws LoginException, ConsultantException{
+
+		if(userAndAdminLoginService.checkUserLoginOrNot(key)) {
+
+			CurrentSession currentUserSession = userService.getCurrentUserByUuid(key);
+
+			if(!currentUserSession.getUserType().equals("admin")) {
+
+				throw new LoginException("Please login as admin");
+
+			}
+
+			Consultant deletedConsultant =
+					adminService.revokePermissionOfConsultant(consultant);
+
+			return new ResponseEntity<Consultant>(deletedConsultant, HttpStatus.CREATED);
+
+
+
+		}else {
+
+			throw new LoginException("Please enter valid key.");
+		}
+	}
+
+	@PostMapping("/grantPermission")
+	@CrossOrigin
+	public ResponseEntity<Consultant> grantPermissionOfConsultant(@RequestParam String key, @RequestBody Consultant consultant) throws LoginException, ConsultantException{
+
+		if(userAndAdminLoginService.checkUserLoginOrNot(key)) {
+
+			CurrentSession currentUserSession = userService.getCurrentUserByUuid(key);
+
+			if(!currentUserSession.getUserType().equals("admin")) {
+
+				throw new LoginException("Please login as admin");
+
+			}
+
+			Consultant deletedConsultant =
+					adminService.grantPermissionOfConsultant(consultant);
+
+			return new ResponseEntity<Consultant>(deletedConsultant, HttpStatus.CREATED);
+
+		}else {
+
+			throw new LoginException("Please enter valid key.");
+		}
+	}
+
+
+
+
 
 
 }
