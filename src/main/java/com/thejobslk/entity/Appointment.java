@@ -24,6 +24,7 @@ public class Appointment {
 	
 	@ManyToOne
 	private User user;
+
 	
 	
 	// Appointement default time will be 60 mins from appoaintment start time.

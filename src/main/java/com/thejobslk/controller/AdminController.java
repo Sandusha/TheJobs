@@ -1,9 +1,11 @@
 package com.thejobslk.controller;
 
 
+import com.thejobslk.entity.Appointment;
 import com.thejobslk.entity.Consultant;
 import com.thejobslk.entity.CurrentSession;
 import com.thejobslk.entity.User;
+import com.thejobslk.exception.AppointmentException;
 import com.thejobslk.exception.ConsultantException;
 import com.thejobslk.exception.LoginException;
 import com.thejobslk.exception.UserException;
@@ -99,6 +101,31 @@ public class AdminController {
 
 		}
 	}
+
+	@GetMapping("/getAllAppointments")
+	@CrossOrigin
+	public ResponseEntity<List<Appointment>> getAllAppointments (@RequestParam String key) throws LoginException, AppointmentException {
+
+		if(userAndAdminLoginService.checkUserLoginOrNot(key)) {
+
+			List<Appointment> allAppointments =
+					adminService.getAllAppointments();
+
+			return new ResponseEntity<List<Appointment>>(allAppointments,
+					HttpStatus.ACCEPTED);
+
+
+		}else {
+
+			throw new LoginException("Invalid key or please login first");
+
+		}
+	}
+
+
+
+
+
 	@DeleteMapping("/revokePermission")
 	@CrossOrigin
 	public ResponseEntity<Consultant> revokePermissionOfConsultant(@RequestParam String key, @RequestBody Consultant consultant) throws LoginException, ConsultantException{

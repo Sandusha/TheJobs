@@ -1,8 +1,10 @@
 package com.thejobslk.service;
 
 import com.thejobslk.config.SpringdocConfig;
+import com.thejobslk.entity.Appointment;
 import com.thejobslk.entity.Consultant;
 import com.thejobslk.entity.User;
+import com.thejobslk.exception.AppointmentException;
 import com.thejobslk.exception.ConsultantException;
 import com.thejobslk.exception.UserException;
 import com.thejobslk.repository.AppointmentDao;
@@ -82,6 +84,26 @@ public class AdminServiceImpl implements AdminService {
 					".");
 		}
 	}
+
+	@Override
+	public List<Appointment> getAllAppointments() throws AppointmentException {
+
+		List<Appointment> listOfAppointments = appointmentDao.findAll();
+
+		if(!listOfAppointments.isEmpty()) {
+
+			return listOfAppointments;
+
+		}else {
+
+			throw new AppointmentException("No Appointments till" +
+					" " +
+					"now" +
+					".");
+		}
+	}
+
+
 
 	@Override
 	public List<Consultant> getAllValidInValidConsultants(String key) throws ConsultantException {
