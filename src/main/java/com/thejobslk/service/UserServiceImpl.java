@@ -211,15 +211,17 @@ public class UserServiceImpl implements UserService, Runnable {
             throw new TimeDateException("Please enter valid Consultant appointment From to To time");
         }
 
-       /* FileReader reader = new FileReader("config.properties");
+        FileReader reader = new FileReader("config.properties");
 
         Properties p = new Properties();
 
         p.load(reader);
-*/
+
         LocalDateTime currentDateTime = LocalDateTime.now();
 
         LocalDateTime tomorrowDateTime = currentDateTime.plusDays(1);
+
+        LocalDateTime thirdDayDateTime = currentDateTime.plusDays(2);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -242,7 +244,7 @@ public class UserServiceImpl implements UserService, Runnable {
 
             // we are checking if time is gone or not if time is gone then don't put in database
 
-            // 2023-03-09 01:00
+
 
             if (currentDateTime.isBefore(dateTime)) {
 
@@ -277,7 +279,31 @@ public class UserServiceImpl implements UserService, Runnable {
                 myTimeDate.put("tomorrow" + i, dateTime);
 
             }
+            // puting 3rd day dates
 
+        } for (int i = from; i <= to; i++) {
+
+            String thirddayString = null;
+
+            if (!(i >= 10)) {
+
+                thirddayString = thirdDayDateTime.toLocalDate() + " 0" + i + ":00";
+
+            } else {
+
+                thirddayString = thirdDayDateTime.toLocalDate() + " " + i + ":00";
+
+            }
+
+            LocalDateTime dateTime = LocalDateTime.parse(thirddayString, formatter);
+
+            // checking if time is gone or not if time is gone ,it won't save in
+            // database
+            if (currentDateTime.isBefore(dateTime)) {
+
+                myTimeDate.put("day after tomorrow" + i, dateTime);
+
+            }
         }
 
     }

@@ -230,6 +230,43 @@ public class ConsultantController {
 		}
 	}
 
+	@PutMapping("/timeUpdate")
+	@CrossOrigin
+	public ResponseEntity<Consultant> timeUpdate(@RequestParam String key,
+													 @RequestBody UpdateTime updateTime) throws LoginException, ConsultantException {
+
+		if(consultantLoginService.checkUserLoginOrNot(key)) {
+
+			if(updateTime.getAppointmentToTime()>(updateTime.getAppointmentFromTime())) {
+
+
+				Consultant finalResult = consultantService.updateTime(key,
+						updateTime);
+
+				return new ResponseEntity<Consultant>(finalResult,
+						HttpStatus.ACCEPTED);
+
+			}else {
+
+				throw new ConsultantException("Please Enter Valid Time Period!");
+
+			}
+
+		}else {
+
+			throw new LoginException("Invalid key or please login first");
+
+		}
+	}
+
+
+
+
+
+
+
+
+
 
 
 }

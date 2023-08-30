@@ -11,8 +11,9 @@ import java.util.List;
 
 public interface ConsultantService {
     Consultant getConsultantDetails(String key) throws UserException;
-
     Consultant forgetPassword(String key, ForgetPassword forgetPassword) throws PasswordException;
+    Consultant updateTime(String key, UpdateTime updateTime) throws ConsultantException;
+
     Consultant getConsultantByUuid(String uuid) throws UserException;
     CurrentSession getCurrentUserByUuid(String uuid) throws LoginException;
     List<Appointment> getUpcommingAppointment(Consultant consultant) throws AppointmentException;

@@ -51,10 +51,6 @@ public class Consultant {
 	private Boolean validConsultant = true;
 	private String type;
 
-
-
-
-
 }
 
 

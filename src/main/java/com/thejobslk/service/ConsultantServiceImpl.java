@@ -334,7 +334,25 @@ public class ConsultantServiceImpl implements ConsultantService {
     }
 
 
+    @Override
+    public Consultant updateTime(String key, UpdateTime updateTime) throws ConsultantException {
 
+        CurrentSession currentUserSession = sessionDao.findByUuid(key);
+        Optional<Consultant> registeredConsultant =
+                consultantDao.findById(currentUserSession.getUserId());
+
+        if (currentUserSession == null) {
+            throw new ConsultantException("Please provide the valid key to " +
+                    "update the times");
+        } else {
+            registeredConsultant.get().setAppointmentToTime(updateTime.getAppointmentToTime());
+            registeredConsultant.get().setAppointmentFromTime(updateTime.getAppointmentFromTime());
+
+            return consultantDao.save(registeredConsultant.get());
+        }
+
+
+    }
 }
 
 
