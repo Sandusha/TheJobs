@@ -51,7 +51,7 @@ public class ConsultantController {
 
 			Consultant registerConsultant = consultantService.getConsultantByUuid(key);
 
-			if(!currentUserSession.getUserType().equals("consultant")) {
+			if(currentUserSession == null || currentUserSession.getUserType() == null || !currentUserSession.getUserType().equals("consultant")) {
 
 				throw new LoginException("Please login as consultant");
 

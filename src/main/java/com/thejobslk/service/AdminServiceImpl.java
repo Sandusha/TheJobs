@@ -156,7 +156,8 @@ public class AdminServiceImpl implements AdminService {
 
 		}else {
 
-			throw new ConsultantException("Doctor not present with this id " + consultant.getConsultantId());
+			throw new ConsultantException("Consultant not present with this " +
+					"id " + consultant.getConsultantId());
 
 		}
 	}

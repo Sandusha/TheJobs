@@ -51,7 +51,7 @@ public class AdminController {
 				throw new ConsultantException("Please enter Valid Details");
 			}
 		} else {
-			throw new LoginException("Key Miss match! Please enter valid key.");
+			throw new LoginException("Invalid key or please login first.");
 		}
 	}
 
@@ -97,7 +97,7 @@ public class AdminController {
 
 		}else {
 
-			throw new LoginException("Invalid key or please login first");
+			throw new LoginException("Invalid key or please login first.");
 
 		}
 	}
@@ -185,13 +185,12 @@ public class AdminController {
 
 }
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+

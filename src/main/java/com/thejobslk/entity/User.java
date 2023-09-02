@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @ToString
 public class User {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE,
     generator = "id_table"
@@ -27,7 +27,7 @@ public class User {
 		sequenceName = "id_sequence",
 		allocationSize = 1
 	)
-	
+
 	private Integer userId;
 	
 	private String name;
@@ -47,7 +47,7 @@ public class User {
 	@JsonIgnore
 	List<Appointment> listOfAppointments = new ArrayList<>();
 
-	
+
 
 }
 
