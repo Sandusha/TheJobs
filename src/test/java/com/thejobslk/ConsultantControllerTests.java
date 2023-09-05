@@ -62,7 +62,8 @@ public class ConsultantControllerTests {
     }
 
     @Test
-    public void testGetUpcomingAppointments_ValidKey_ReturnsAppointments() throws LoginException, UserException, ConsultantException, AppointmentException {
+    public void testGetUpcomingAppointments_ValidKey_ReturnsAppointments() throws LoginException, UserException,
+            ConsultantException, AppointmentException {
 
         String validKey = "validKey";
         CurrentSession currentUserSession = new CurrentSession();
@@ -74,26 +75,25 @@ public class ConsultantControllerTests {
         when(consultantService.getConsultantByUuid(validKey)).thenReturn(registerConsultant);
         when(consultantService.getUpcommingAppointment(registerConsultant)).thenReturn(appointments);
 
-
         ResponseEntity<List<Appointment>> response = consultantController.getUpcomingAppointments(validKey);
-
 
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
         assertSame(appointments, response.getBody());
     }
 
     @Test
-    public void testGetUpcomingAppointments_InvalidKey_ThrowsLoginException() throws LoginException, UserException, ConsultantException, AppointmentException {
+    public void testGetUpcomingAppointments_InvalidKey_ThrowsLoginException() throws LoginException, UserException,
+            ConsultantException, AppointmentException {
 
         String invalidKey = "invalidKey";
         when(consultantLoginService.checkUserLoginOrNot(invalidKey)).thenReturn(false);
-
 
         assertThrows(LoginException.class, () -> consultantController.getUpcomingAppointments(invalidKey));
     }
 
     @Test
-    public void testGetPastAppointments_ValidKey_ReturnsAppointments() throws LoginException, UserException, AppointmentException, ConsultantException {
+    public void testGetPastAppointments_ValidKey_ReturnsAppointments() throws LoginException,
+            UserException, AppointmentException, ConsultantException {
 
         String validKey = "validKey";
         CurrentSession currentUserSession = new CurrentSession();
@@ -105,16 +105,14 @@ public class ConsultantControllerTests {
         when(consultantService.getConsultantByUuid(validKey)).thenReturn(registerConsultant);
         when(consultantService.getPastAppointment(registerConsultant)).thenReturn(appointments);
 
-
         ResponseEntity<List<Appointment>> response = consultantController.getPastAppointments(validKey);
-
-
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
         assertSame(appointments, response.getBody());
     }
 
     @Test
-    public void testGetPastAppointments_InvalidKey_ThrowsLoginException() throws LoginException, UserException, AppointmentException, ConsultantException {
+    public void testGetPastAppointments_InvalidKey_ThrowsLoginException() throws LoginException, UserException,
+            AppointmentException, ConsultantException {
 
         String invalidKey = "invalidKey";
         when(consultantLoginService.checkUserLoginOrNot(invalidKey)).thenReturn(false);
@@ -124,7 +122,8 @@ public class ConsultantControllerTests {
     }
 
     @Test
-    public void testGetAllAppointments_ValidKey_ReturnsAppointments() throws LoginException, UserException, AppointmentException, ConsultantException {
+    public void testGetAllAppointments_ValidKey_ReturnsAppointments() throws LoginException, UserException,
+            AppointmentException, ConsultantException {
 
         String validKey = "validKey";
         CurrentSession currentUserSession = new CurrentSession();
@@ -145,7 +144,8 @@ public class ConsultantControllerTests {
     }
 
     @Test
-    public void testGetAllAppointments_InvalidKey_ThrowsLoginException() throws LoginException, UserException, AppointmentException, ConsultantException {
+    public void testGetAllAppointments_InvalidKey_ThrowsLoginException() throws LoginException, UserException,
+            AppointmentException, ConsultantException {
 
         String invalidKey = "invalidKey";
         when(consultantLoginService.checkUserLoginOrNot(invalidKey)).thenReturn(false);
@@ -155,7 +155,8 @@ public class ConsultantControllerTests {
     }
 
     @Test
-    public void testGetAllListOfUsers_ValidKey_ReturnsListOfUsers() throws ConsultantException, LoginException, UserException {
+    public void testGetAllListOfUsers_ValidKey_ReturnsListOfUsers() throws ConsultantException,
+            LoginException, UserException {
 
         String validKey = "validKey";
         CurrentSession currentUserSession = new CurrentSession();
@@ -167,26 +168,25 @@ public class ConsultantControllerTests {
         when(consultantService.getConsultantByUuid(validKey)).thenReturn(registerConsultant);
         when(consultantService.getListOfUser()).thenReturn(users);
 
-
         ResponseEntity<List<User>> response = consultantController.getAllListOfUsers(validKey);
-
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertSame(users, response.getBody());
     }
 
     @Test
-    public void testGetAllListOfUsers_InvalidKey_ThrowsLoginException() throws ConsultantException, LoginException, UserException {
+    public void testGetAllListOfUsers_InvalidKey_ThrowsLoginException() throws ConsultantException,
+            LoginException, UserException {
 
         String invalidKey = "invalidKey";
         when(consultantLoginService.checkUserLoginOrNot(invalidKey)).thenReturn(false);
-
 
         assertThrows(LoginException.class, () -> consultantController.getAllListOfUsers(invalidKey));
     }
 
     @Test
-    public void testForgetPassword_ValidKeyAndMatchingPasswords_ReturnsConsultant() throws LoginException, PasswordException {
+    public void testForgetPassword_ValidKeyAndMatchingPasswords_ReturnsConsultant() throws
+            LoginException, PasswordException {
 
         String validKey = "validKey";
         ForgetPassword forgetPassword = new ForgetPassword();
@@ -197,16 +197,15 @@ public class ConsultantControllerTests {
         when(consultantLoginService.checkUserLoginOrNot(validKey)).thenReturn(true);
         when(consultantService.forgetPassword(validKey, forgetPassword)).thenReturn(consultant);
 
-
         ResponseEntity<Consultant> response = consultantController.forgetPassword(validKey, forgetPassword);
-
 
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
         assertSame(consultant, response.getBody());
     }
 
     @Test
-    public void testForgetPassword_ValidKeyAndNonMatchingPasswords_ThrowsPasswordException() throws LoginException, PasswordException {
+    public void testForgetPassword_ValidKeyAndNonMatchingPasswords_ThrowsPasswordException() throws
+            LoginException, PasswordException {
 
         String validKey = "validKey";
         ForgetPassword forgetPassword = new ForgetPassword();
@@ -215,12 +214,12 @@ public class ConsultantControllerTests {
         forgetPassword.setConfirmNewPassword("differentPassword");
         when(consultantLoginService.checkUserLoginOrNot(validKey)).thenReturn(true);
 
-
         assertThrows(PasswordException.class, () -> consultantController.forgetPassword(validKey, forgetPassword));
     }
 
     @Test
-    public void testForgetPassword_ValidKeyAndSameOldNewPasswords_ThrowsPasswordException() throws LoginException, PasswordException {
+    public void testForgetPassword_ValidKeyAndSameOldNewPasswords_ThrowsPasswordException()
+            throws LoginException, PasswordException {
 
         String validKey = "validKey";
         ForgetPassword forgetPassword = new ForgetPassword();
@@ -229,23 +228,23 @@ public class ConsultantControllerTests {
         forgetPassword.setConfirmNewPassword("oldPassword");
         when(consultantLoginService.checkUserLoginOrNot(validKey)).thenReturn(true);
 
-
         assertThrows(PasswordException.class, () -> consultantController.forgetPassword(validKey, forgetPassword));
     }
 
     @Test
-    public void testForgetPassword_InvalidKey_ThrowsLoginException() throws LoginException, PasswordException {
+    public void testForgetPassword_InvalidKey_ThrowsLoginException() throws
+            LoginException, PasswordException {
 
         String invalidKey = "invalidKey";
         ForgetPassword forgetPassword = new ForgetPassword();
         when(consultantLoginService.checkUserLoginOrNot(invalidKey)).thenReturn(false);
 
-
         assertThrows(LoginException.class, () -> consultantController.forgetPassword(invalidKey, forgetPassword));
     }
 
     @Test
-    public void testTimeUpdate_ValidKeyAndValidTime_ReturnsConsultant() throws LoginException, ConsultantException {
+    public void testTimeUpdate_ValidKeyAndValidTime_ReturnsConsultant() throws
+            LoginException, ConsultantException {
 
         String validKey = "validKey";
         UpdateTime updateTime = new UpdateTime();
@@ -264,7 +263,8 @@ public class ConsultantControllerTests {
     }
 
     @Test
-    public void testTimeUpdate_ValidKeyAndInvalidTime_ThrowsConsultantException() throws LoginException, ConsultantException {
+    public void testTimeUpdate_ValidKeyAndInvalidTime_ThrowsConsultantException() throws
+            LoginException, ConsultantException {
 
         String validKey = "validKey";
         UpdateTime updateTime = new UpdateTime();

@@ -27,20 +27,13 @@ public class User {
 		sequenceName = "id_sequence",
 		allocationSize = 1
 	)
-
 	private Integer userId;
-	
 	private String name;
-	
 	@Pattern(regexp = "^[0-9]{10}$", message = "Please enter valid mobile number")
 	private String mobileNo;
-	
-	
 	private String password;
-	
 	@Email(message = "Email should be a valid email")
 	private String email;
-	
 	private String type;
 	
 	@OneToMany(cascade = CascadeType.ALL)

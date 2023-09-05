@@ -218,7 +218,8 @@ public class ConsultantServiceImpl implements ConsultantService {
 
     @Override
     public List<LocalDateTime> getConsultantAvailableTimingForBooking(String key,
-                                                                  Consultant consultant) throws IOException, TimeDateException, ConsultantException {
+                                                                  Consultant consultant) throws IOException,
+            TimeDateException, ConsultantException {
 
         Optional<Consultant> registerconsultant =
                 consultantDao.findById(consultant.getConsultantId());
@@ -227,20 +228,15 @@ public class ConsultantServiceImpl implements ConsultantService {
 
         if(registerconsultant.isPresent()) {
 
-            UserServiceImpl.loadAppointmentDates(registerconsultant.get().getAppointmentFromTime(), registerconsultant.get().getAppointmentToTime());
+            UserServiceImpl.loadAppointmentDates(registerconsultant.get().getAppointmentFromTime(),
+                    registerconsultant.get().getAppointmentToTime());
 
             Map<String, LocalDateTime> myTimeDate = UserServiceImpl.myTimeDate;
 
             List<Appointment> listOfConsultantsAppointment = registerconsultant.get().getListOfAppointments();
 
-
-
-
-
             for(String str: myTimeDate.keySet()) {
-
                 Boolean flag = false;
-
                 for(Appointment eachAppointment: listOfConsultantsAppointment) {
 
                     LocalDateTime localDateTime = myTimeDate.get(str);

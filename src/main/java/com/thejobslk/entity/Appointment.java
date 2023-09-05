@@ -21,49 +21,16 @@ public class Appointment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer appointmentId;
-	
 	@ManyToOne
 	private User user;
-
-	
-	
 	// Appointement default time will be 60 mins from appoaintment start time.
-	
-
 	private LocalDateTime appointmentDateAndTime;
-	
-	
 	@ManyToOne
 	private Consultant consultant;
-	
-		@Override
-	public int hashCode() {
-		return Objects.hash(appointmentId);
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		
-		if (this == obj)
-			
-			return true;
-		
-		if (obj == null)
-			
-			return false;
-		
-		if (getClass() != obj.getClass())
-			
-			return false;
-		
-		Appointment other = (Appointment) obj;
-		
-		return Objects.equals(appointmentId, other.appointmentId);
 
 	}
-	
-	
 
-}
+
+
+
 

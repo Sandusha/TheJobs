@@ -41,9 +41,7 @@ public class LoginControllerTests {
         LoginUUIDKey loginUUIDKey = new LoginUUIDKey();
         when(userAndAdminLoginService.logIntoAccount(loginDTO)).thenReturn(loginUUIDKey);
 
-
         ResponseEntity<LoginUUIDKey> response = loginController.loginUser(loginDTO);
-
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertSame(loginUUIDKey, response.getBody());
@@ -59,9 +57,7 @@ public class LoginControllerTests {
         LoginUUIDKey loginUUIDKey = new LoginUUIDKey();
         when(consultantLoginService.logIntoAccount(loginDTO)).thenReturn(loginUUIDKey);
 
-
         ResponseEntity<LoginUUIDKey> response = loginController.loginConsultant(loginDTO);
-
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertSame(loginUUIDKey, response.getBody());
@@ -76,9 +72,7 @@ public class LoginControllerTests {
         String uuid = "valid_uuid";
         when(userAndAdminLoginService.checkUserLoginOrNot(uuid)).thenReturn(true);
 
-
         ResponseEntity<LoginResponse> response = loginController.checkUserLoginORNot(uuid);
-
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().getLoginOrNot());

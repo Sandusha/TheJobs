@@ -35,7 +35,9 @@ public class AdminController {
 	@PostMapping(path = "/registerConsultant")
 	@CrossOrigin
 	public ResponseEntity<Consultant> registerConsultant(@RequestParam String key,
-														 @RequestBody Consultant consultant) throws ConsultantException, LoginException {
+			@RequestBody Consultant consultant)
+			throws ConsultantException, LoginException {
+
 		if (userAndAdminLoginService.checkUserLoginOrNot(key)) {
 			CurrentSession currentUserSession = userService.getCurrentUserByUuid(key);
 			if (!currentUserSession.getUserType().equals("admin")) {
@@ -126,7 +128,7 @@ public class AdminController {
 
 
 
-	@DeleteMapping("/revokePermission")
+	@PutMapping("/revokePermission")
 	@CrossOrigin
 	public ResponseEntity<Consultant> revokePermissionOfConsultant(@RequestParam String key, @RequestBody Consultant consultant) throws LoginException, ConsultantException{
 
@@ -153,7 +155,7 @@ public class AdminController {
 		}
 	}
 
-	@PostMapping("/grantPermission")
+	@PutMapping("/grantPermission")
 	@CrossOrigin
 	public ResponseEntity<Consultant> grantPermissionOfConsultant(@RequestParam String key, @RequestBody Consultant consultant) throws LoginException, ConsultantException{
 

@@ -1,6 +1,5 @@
 package com.thejobslk.service;
 
-
 import com.thejobslk.config.SpringdocConfig;
 import com.thejobslk.entity.CurrentSession;
 import com.thejobslk.entity.LoginDTO;
@@ -36,7 +35,6 @@ public class UserAndAdminLoginServiceImpl implements UserAndAdminLoginService {
 			throw new LoginException("Please enter valid Number " + loginDTO.getMobileNo());
 		}
 
-
 		Optional<CurrentSession> validCustomerSessionOpt =
 				sessionDao.findById(existingUser.getUserId());
 
@@ -51,25 +49,15 @@ public class UserAndAdminLoginServiceImpl implements UserAndAdminLoginService {
 				loginUUIDKey.setUuid(validCustomerSessionOpt.get().getUuid());
 				loginUUIDKey.setMsg("Login Successful");
 				return loginUUIDKey;
-
 			}
-
 			throw new LoginException("Please enter valid details");
 
-
 		}
-
-
-
-
-
-		// please do uncomment this code while using this application in postman
 
 		if(validCustomerSessionOpt.isPresent()) {
 			throw new LoginException("User already logged in!");
 
 		}
-
 
 		if(SpringdocConfig.bCryptPasswordEncoder.matches(loginDTO.getPassword(),
 				existingUser.getPassword())) {

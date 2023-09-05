@@ -15,28 +15,16 @@ public class CurrentSession {
 	
 	@Id
 	private Integer userId;
-	
 	private String uuid;
-	
 	private String userType;
-	
 	private LocalDateTime localDateTime;
-	
-	public CurrentSession() {
-		
-	}
-
-	
-
+	public CurrentSession() { }
 	public CurrentSession(Integer userId, String uuid, LocalDateTime localDateTime) {
 		super();
 		this.userId = userId;
 		this.uuid = uuid;
 		this.localDateTime = localDateTime;
 	}
-
-
-
 	public Integer getUserId() {
 		return userId;
 	}
@@ -60,19 +48,10 @@ public class CurrentSession {
 	public void setLocalDateTime(LocalDateTime localDateTime) {
 		this.localDateTime = localDateTime;
 	}
-
-
-
 	public String getUserType() {
 		return userType;
 	}
-
-
-
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
-	
-	
-
 }

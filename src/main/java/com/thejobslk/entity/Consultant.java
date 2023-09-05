@@ -28,25 +28,18 @@ public class Consultant {
 	)
 	private Integer consultantId;
 	private String name;
-
 	private String email;
 	private String password;
-
 	@Pattern(regexp = "^[0-9]{10}$", message = "Please enter valid mobile number")
 	private String mobileNo;
-
 	private String specialty;
 	private String experience;
-
 	//	@OneToMany(cascade = CascadeType.ALL,mappedBy = "appointmentId") from
 	//	tutorial
 	@OneToMany(cascade = CascadeType.ALL)
 	@JsonIgnore
 	List<Appointment> listOfAppointments = new ArrayList<>();
-
 	private Integer appointmentFromTime;
-
-
 	private Integer appointmentToTime;
 	private Boolean validConsultant = true;
 	private String type;

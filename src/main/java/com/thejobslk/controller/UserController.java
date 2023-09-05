@@ -82,8 +82,9 @@ public class UserController {
 
 	@PostMapping("/bookAppointment")
 	@CrossOrigin
-	public ResponseEntity<Appointment> bookAppointment(@RequestParam String key, @RequestBody Appointment appointment) throws LoginException, AppointmentException,
-			ConsultantException, IOException, TimeDateException, MessagingException{
+	public ResponseEntity<Appointment> bookAppointment(@RequestParam String key,
+	 @RequestBody Appointment appointment) throws LoginException, AppointmentException,
+	ConsultantException, IOException, TimeDateException, MessagingException{
 
 		if(appointment == null) {
 			throw new AppointmentException("Please enter valid appointment " +
@@ -107,7 +108,8 @@ public class UserController {
 
 	@PostMapping ("/availableTiming")
 	@CrossOrigin
-	public ResponseEntity<List<LocalDateTime>> getAvailableTimingOfConsultant(@RequestParam String key, @RequestBody Consultant consultant) throws IOException, TimeDateException, LoginException, ConsultantException{
+	public ResponseEntity<List<LocalDateTime>> getAvailableTimingOfConsultant(@RequestParam String key,
+		 @RequestBody Consultant consultant) throws IOException, TimeDateException, LoginException, ConsultantException{
 
 		if(loginService.checkUserLoginOrNot(key)) {
 
@@ -128,7 +130,8 @@ public class UserController {
 
 	@GetMapping("/allAppointment")
 	@CrossOrigin
-	public ResponseEntity<List<Appointment>> GetUserAllAppointment(@RequestParam String key) throws AppointmentException, UserException, LoginException{
+	public ResponseEntity<List<Appointment>> GetUserAllAppointment(@RequestParam String key) throws
+			AppointmentException, UserException, LoginException{
 
 		if(loginService.checkUserLoginOrNot(key)) {
 

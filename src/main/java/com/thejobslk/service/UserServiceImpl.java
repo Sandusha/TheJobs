@@ -205,8 +205,8 @@ public class UserServiceImpl implements UserService, Runnable {
 
 
     public static void loadAppointmentDates(Integer from, Integer to) throws IOException, TimeDateException {
-  myTimeDate.clear();
- if (from == null || to == null) {
+     myTimeDate.clear();
+       if (from == null || to == null) {
 
             throw new TimeDateException("Please enter valid Consultant appointment From to To time");
         }
@@ -309,15 +309,14 @@ public class UserServiceImpl implements UserService, Runnable {
     }
 
     @Override
-    public Appointment bookAppointment(String key, Appointment appointment) throws AppointmentException, LoginException, ConsultantException, IOException, TimeDateException, MessagingException {
+    public Appointment bookAppointment(String key, Appointment appointment) throws AppointmentException, LoginException, ConsultantException,
+            IOException, TimeDateException, MessagingException {
 
         CurrentSession currentUserSession = sessionDao.findByUuid(key);
 
         Optional<User> user = userDao.findById(currentUserSession.getUserId());
 
-
         synchronized (this) {
-
             if (user.isPresent()) {
 
                 // setting user in appointment
@@ -352,7 +351,6 @@ public class UserServiceImpl implements UserService, Runnable {
                     }
 
                     // check if given date and time if correct or not
-
                     for (String str : myTimeDate.keySet()) {
 
                         if (myTimeDate.get(str).isEqual(appointment.getAppointmentDateAndTime())) {
@@ -361,18 +359,12 @@ public class UserServiceImpl implements UserService, Runnable {
 
                         }
                     }
-
-
                     Appointment registerAppointment = null;
 
-
                     if (!flag1 && flag2) {
-
-
                         registerAppointment = appointmentDao.save(appointment);
 
                         // email to user
-
                         emailBody.setEmailBody("Dear Sir/Ma'am, \n You have " +
                                 "booked an appointment with " + registerAppointment.getConsultant().getName() +
                                 ". Please make sure to join on time. If you " +
@@ -402,12 +394,9 @@ public class UserServiceImpl implements UserService, Runnable {
                     } else {
 
                         throw new AppointmentException("This time or date already booked or please enter valid appointment time and date " + appointment.getAppointmentDateAndTime());
-
                     }
                     // mapping appointment in Consultant and then saving
                     // Consultant
-
-
                     registerConsultant.get().getListOfAppointments().add(registerAppointment);
 
                     consultantDao.save(registerConsultant.get());
@@ -418,9 +407,7 @@ public class UserServiceImpl implements UserService, Runnable {
 
                     userDao.save(user.get());
 
-
                     return registerAppointment;
-
 
                 } else {
 
